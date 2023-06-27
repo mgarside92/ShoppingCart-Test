@@ -2,7 +2,7 @@
 
 namespace ShoppingCart.Domain.Services
 {
-    public class BaseService
+    public abstract class BaseService
     {
         public readonly IUnitOfWork _unitOfWork;
 
