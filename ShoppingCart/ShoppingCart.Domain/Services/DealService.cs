@@ -16,38 +16,49 @@ namespace ShoppingCart.Domain.Services
             _dealRepository = dealRepository;
         }
 
-        public double CalculateBalanceAndApplyDeals(List<CartItem> cartItems)
-        {
-            double balance = 0;
+		public double CalculateBalanceAndApplyDeals(List<CartItem> cartItems)
+		{
+			double balance = 0;
 
-            foreach (var item in cartItems)
-            {
-                var deal = _dealRepository.GetDealByProductId(item.ProductId);
-                if (deal != null)
-                {
-                    if (item.Quantity >= deal.DealQuantity)
-                    {
-                        var dealSets = item.Quantity / deal.DealQuantity;
-                        var remainingItems = item.Quantity % deal.DealQuantity;
+			foreach (var item in cartItems)
+			{
+				var deal = _dealRepository.GetDealByProductId(item.ProductId);
 
-                        balance += dealSets * deal.DealPrice;
-                        balance += remainingItems * item.Product.Price;
-                    }
-                    else
-                    {
-						balance += item.Quantity * item.Product.Price;
-					}
-                }
-                else
-                {
-                    balance += item.Quantity * item.Product.Price;
-				}
-            }
+                // calculate balance
+				balance += deal != null ? BalanceWithDeal(item, deal) : BalanceWithoutDeal(item);
+			}
 
-            return balance;
-        }
+			return balance;
+		}
 
-        public void SeedDeals()
+		private double BalanceWithDeal(CartItem item, Deal deal)
+		{
+			double balance = 0;
+
+            // if quantity is less than deal requirements then return balance without deal applied
+			if (item.Quantity < deal.DealQuantity)
+			{
+				return BalanceWithoutDeal(item);
+			}
+
+			var dealSets = item.Quantity / deal.DealQuantity;
+			var remainingItems = item.Quantity % deal.DealQuantity;
+
+            // calculate balance at deal price
+			balance += dealSets * deal.DealPrice;
+
+            // calculate balance of remaining items
+			balance += remainingItems * item.Product.Price;
+
+			return balance;
+		}
+
+		private double BalanceWithoutDeal(CartItem item)
+		{
+			return item.Quantity * item.Product.Price;
+		}
+
+		public void SeedDeals()
         {
             var productA = _productRepository.GetAll().FirstOrDefault(p => p.Name == "A");
 
