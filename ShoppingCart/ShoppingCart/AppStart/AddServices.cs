@@ -9,15 +9,15 @@ namespace ShoppingCart.AppStart
     {
         public static void RegisterServices(this IServiceCollection services)
         {
-            services.AddScoped<ICartService, CartService>();
-            services.AddScoped<IDealService, DealService>();
-            services.AddScoped<IProductService, ProductService>();
+            services.AddTransient<ICartService, CartService>();
+            services.AddTransient<IDealService, DealService>();
+            services.AddTransient<IProductService, ProductService>();
 
-            services.AddScoped<ICartItemRepository, CartItemRepository>();
-            services.AddScoped<IDealRepository, DealRepository>();
-            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddTransient<ICartItemRepository, CartItemRepository>();
+            services.AddTransient<IDealRepository, DealRepository>();
+            services.AddTransient<IProductRepository, ProductRepository>();
 
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
         }
     }
 }
