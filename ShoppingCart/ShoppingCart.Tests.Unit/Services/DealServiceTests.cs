@@ -3,7 +3,7 @@ using ShoppingCart.Domain.Services;
 using ShoppingCart.Models.Entities;
 using ShoppingCart.Repositories.Repositories.Interfaces;
 
-namespace ShoppingCart.Tests.Services
+namespace ShoppingCart.Tests.Unit.Services
 {
 	public class DealServiceTests
 	{
@@ -25,6 +25,7 @@ namespace ShoppingCart.Tests.Services
 		[Test]
 		public void CalculateBalanceAndApplyDeals_NoDeals_ShouldReturnCorrectBalance()
 		{
+			// Arrange
 			var cartItems = new List<CartItem>
 			{
 				new CartItem { ProductId = Guid.NewGuid(), Quantity = 3, Product = new Product { Price = 100 } }
@@ -32,14 +33,17 @@ namespace ShoppingCart.Tests.Services
 
 			_mockDealRepository.Setup(m => m.GetDealByProductId(It.IsAny<Guid>())).Returns((Deal)null);
 
+			// Act
 			double balance = _dealService.CalculateBalanceAndApplyDeals(cartItems);
 
-			Assert.AreEqual(300, balance);
+			// Assert
+			Assert.That(balance, Is.EqualTo(300));
 		}
 
 		[Test]
 		public void CalculateBalanceAndApplyDeals_WithDeals_ShouldReturnCorrectBalance()
 		{
+			// Arrange
 			var productId = Guid.NewGuid();
 			var deal = new Deal { ProductId = productId, DealQuantity = 2, DealPrice = 150 };
 			var cartItems = new List<CartItem>
@@ -49,9 +53,11 @@ namespace ShoppingCart.Tests.Services
 
 			_mockDealRepository.Setup(m => m.GetDealByProductId(It.IsAny<Guid>())).Returns(deal);
 
+			// Act
 			double balance = _dealService.CalculateBalanceAndApplyDeals(cartItems);
 
-			Assert.AreEqual(250, balance);
+			// Assert
+			Assert.That(balance, Is.EqualTo(250));
 		}
 	}
 }

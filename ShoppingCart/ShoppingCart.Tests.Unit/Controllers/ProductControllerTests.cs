@@ -5,7 +5,7 @@ using ShoppingCart.Controllers;
 using ShoppingCart.Domain.Services.Interfaces;
 using ShoppingCart.Models.Entities;
 
-namespace ShoppingCart.Tests.Controllers
+namespace ShoppingCart.Tests.Unit.Controllers
 {
 	public class ProductControllerTests
 	{
@@ -22,11 +22,14 @@ namespace ShoppingCart.Tests.Controllers
 		[Test]
 		public void GetAllProducts_Successful_ReturnsOk()
 		{
+			// Arrange
 			var products = new List<Product>();
 			_mockProductService.Setup(m => m.GetProducts()).Returns(Result.Ok(products));
 
+			// Act
 			var result = _productController.GetAllProducts() as OkObjectResult;
 
+			// Assert
 			Assert.IsNotNull(result);
 			Assert.That(result.StatusCode, Is.EqualTo(200));
 			Assert.That(result.Value, Is.EqualTo(products));
@@ -35,10 +38,13 @@ namespace ShoppingCart.Tests.Controllers
 		[Test]
 		public void GetAllProducts_Failed_ReturnsBadRequest()
 		{
+			// Arrange
 			_mockProductService.Setup(m => m.GetProducts()).Returns(Result.Fail<List<Product>>("Some error"));
 
+			// Act
 			var result = _productController.GetAllProducts() as BadRequestObjectResult;
 
+			// Assert
 			Assert.IsNotNull(result);
 			Assert.That(result.StatusCode, Is.EqualTo(400));
 		}
